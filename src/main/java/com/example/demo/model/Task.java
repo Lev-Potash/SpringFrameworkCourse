@@ -27,6 +27,14 @@ public class Task {
     private String description;
     private boolean done;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public void setDate_(LocalDate date_) {
         this.date_ = date_;
     }
