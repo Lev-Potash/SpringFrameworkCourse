@@ -21,7 +21,8 @@ public class UsersController {
 
     @PostMapping("/users")
     public Users create(@RequestBody Users users) {
-        return UserServiceImpl.getInstance().saveUser(users);
+        //return UserServiceImpl.getInstance().saveUser(users);
+        return UserServiceImpl.getInstance().create(users);
     }
 
 }
