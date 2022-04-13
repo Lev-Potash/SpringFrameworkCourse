@@ -13,17 +13,35 @@ import org.springframework.stereotype.Service;
  * На этот раз, нужно немного переделать создание пользователя. Добавим шифрование пароля.
  * И также добавим метод, который возвращает текущего пользователя.
  *
- * Логин пользователя можно получить из объекта SecurityContextHolder.getContext().getAuthentication().
+ * Логин пользователя можно получить из объекта <code>SecurityContextHolder.getContext().getAuthentication()</code>.
  * Далее, достаем пользователя по логину с БД
+ *
+ * @see Service
+ * Мы помечаем бобы <code>@Service</code>, чтобы указать, что они содержат бизнес-логику.
+ * Помимо использования на сервисном уровне, для этой аннотации нет другого специального использования.
  */
 @Service
 public class UserServiceImpl implements UserService {
 
+    /**
+     * @see Autowired
+     * Внедряет единственный экземпляр (в данном случае) класса в поле userRepository из компонента <code>@Repository</code>
+     * @see UserRepository
+     */
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private static UserServiceImpl userServiceImpl;
+
+    public static UserServiceImpl getInstance() {
+        if(userServiceImpl == null) {
+            userServiceImpl = new UserServiceImpl();
+        }
+        return userServiceImpl;
+    }
 
     @Override
     public Users saveUser(Users users) {
@@ -36,6 +54,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * <code>authentication.getPrincipal()</code>
+     * @return <code>Principal</code> (участника), который проходит проверку подлинности,
+     * или участника, прошедшего проверку подлинности после проверки подлинности.
+     *
+     * <code>principal</code> объект класса <code>org.springframework.security.core.userdetails.User</code>,
+     * у которого при помощи метода <code>principal.getUsername()</code> выдается Логин пользователя.
+     * Наш метод вернет Логин пользователя, если он есть в репозитории, иначе исключение от Optional<>
+     */
     @Override
     public Users getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

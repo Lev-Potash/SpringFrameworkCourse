@@ -12,12 +12,34 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Метод loadUserByUsername получает детали пользователя.
+     *
+     * Внутри мы использовали UserRepository, который был создан ранее, для регистрации пользователя.
+     *
+     * В этом репозитории нужно добавить метод findByLogin, который возвращает Optional<User> по логину пользователя
+     *
+     * В конструкторе
+     * <code>
+     *     org.springframework.security.core.userdetails.User(
+     *          String username,
+     *          String password,
+     *          Collection<? extends GrantedAuthority> authorities
+     * )
+     * </code>
+     * имеется 3 параметра : username, login, role
+     *
+     * <code>Collections.singletonList(new SimpleGrantedAuthority("USER")));</code> - по сути добавляет в список объект
+     * <code>SimpleGrantedAuthority</code> приравнивая его элементу списка <code>element</code>
+     *
+     */
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 

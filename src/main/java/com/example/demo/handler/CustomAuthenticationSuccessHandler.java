@@ -35,6 +35,17 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                           HttpServletResponse response, Authentication authentication)
             throws IOException {
 
+        System.out.println("authentication.getAuthorities() " + authentication.getAuthorities());
+        System.out.println("authentication.getCredentials() " + authentication.getCredentials());
+        System.out.println("authentication.getDetails() " + authentication.getDetails());
+        System.out.println("authentication.isAuthenticated() " + authentication.isAuthenticated());
+        authentication.setAuthenticated(false);
+        System.out.println("authentication.getAuthorities() " + authentication.isAuthenticated());
+        /*authentication.getAuthorities();
+        authentication.getCredentials();
+        authentication.getDetails();
+        authentication.isAuthenticated();
+        authentication.setAuthenticated(false);*/
         response.setStatus(HttpStatus.OK.value());
         response.getWriter().flush();
         response.getWriter().close();
