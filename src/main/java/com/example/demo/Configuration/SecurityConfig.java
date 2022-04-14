@@ -48,25 +48,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * .antMatchers("/login*").permitAll() - таким образом можно указать все ресты, которые можно вызывать без авторизации.
      * .formLogin().loginProcessingUrl("/login") - тут указывается рест для авторизации.
-     * .anyRequest().authenticated() - любой запрос (<b>http.authorizeRequests()</b>), который мы получаем аутентифицирутся
+     * .anyRequest().authenticated() - любой другой запрос (<b>http.authorizeRequests()</b>), который мы получаем аутентифицирутся
      * .usernameParameter("login").passwordParameter("password") - указаны параметры post запроса для авторизации.
      * .failureHandler(customAuthenticationFailureHandler) - указываем ранее созданный failureHandler.
      * .successHandler(customAuthenticationSuccessHandler) - указываем ранее созданный successHandler.
      * PasswordEncoder - используется для хэширования пароля
      * DaoAuthenticationProvider - тут мы указываем UserDetailsService и PasswordEncoder
-     * @param http
-     * @throws Exception
+     * @param http использует HttpSecurity
+     * @throws Exception исключение
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/login*").permitAll()
-                .antMatchers(HttpMethod.POST, "/users").permitAll() //registration
+                // доступ разрешен всем пользователям
+                .antMatchers("/login").permitAll()
+                .antMatchers(HttpMethod.POST,"/users").permitAll()
+                // доступ разрешен пользователям с ролью USER
+                .antMatchers(HttpMethod.GET,"/main-user").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/main-admin").hasAuthority("ADMIN")
+                //.antMatchers("/users/**").hasAuthority("USER")
+                //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginProcessingUrl("/login")
                 .usernameParameter("login").passwordParameter("password")
+                //Перенарпавление на главную страницу после успешного входа
+                //.defaultSuccessUrl("/users/me/")
                 .failureHandler(customAuthenticationFailureHandler)
                 .successHandler(customAuthenticationSuccessHandler)
                 .and().csrf().disable()
@@ -77,15 +85,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * PasswordEncoder - используется для хэширования пароля
-     * @see @Bean - это аннотация, которая позволяет указывать на экземпляр класса, созданного в методе
-     * @see <em>#passwordEncoder()</em>. Таким образом мы получаем экземпляр класса бина (<b>new BCryptPasswordEncoder()</b>).
-     * @Bean указывет только на метод, который возращает экземпляр бина нужного нам класса
+     * @see Bean - это аннотация, которая позволяет указывать на экземпляр класса, созданного в методе
+     * @see #passwordEncoder(). Таким образом мы получаем экземпляр класса бина (<b>new BCryptPasswordEncoder()</b>).
+     * Bean указывет только на метод, который возращает экземпляр бина нужного нам класса
      * @see BCryptPasswordEncoder() - это констуктор одноименного класса BCryptPasswordEncoder, который принимает значение
      * strenght ("силы") для настройки уровня шифрования. Важно подобрать в констуктор такие параметры, чтобы отлик на аутентифиацию
      * Логина и пароля пользователя соответсвовал 1 секунде.
      * BCrypt - один из стандартов шифрования (таких как: SCrypt, sha256, pbkdf2, noop и др)
      *
-     * @return
+     * @return BCryptPasswordEncoder()
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -95,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * DaoAuthenticationProvider - тут мы указываем UserDetailsService и PasswordEncoder
-     * @return
+     * @return authProvider
      */
     @Bean
    public DaoAuthenticationProvider authProvider() {

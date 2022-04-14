@@ -2,6 +2,8 @@ package com.example.demo.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -39,13 +41,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         System.out.println("authentication.getCredentials() " + authentication.getCredentials());
         System.out.println("authentication.getDetails() " + authentication.getDetails());
         System.out.println("authentication.isAuthenticated() " + authentication.isAuthenticated());
-        authentication.setAuthenticated(false);
+        //authentication.setAuthenticated(false);
         System.out.println("authentication.getAuthorities() " + authentication.isAuthenticated());
-        /*authentication.getAuthorities();
-        authentication.getCredentials();
-        authentication.getDetails();
-        authentication.isAuthenticated();
-        authentication.setAuthenticated(false);*/
+        System.out.println("authentication.getPrincipal() " + authentication.getPrincipal());
+        System.out.println("authentication.getPrincipal().getClass() " +
+                    authentication.getPrincipal().getClass());
+
         response.setStatus(HttpStatus.OK.value());
         response.getWriter().flush();
         response.getWriter().close();

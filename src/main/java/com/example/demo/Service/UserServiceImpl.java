@@ -34,18 +34,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private static UserServiceImpl userServiceImpl;
-
-    public static UserServiceImpl getInstance() {
-        if(userServiceImpl == null) {
-            userServiceImpl = new UserServiceImpl();
-        }
-        return userServiceImpl;
-    }
+    //@Autowired
+   // private UserDetailsServiceImpl userDetailsService;
 
     @Override
-    public Users saveUser(Users users) {
-        return userRepository.save(users);
+    public Users saveUser(Users user) {
+        return userRepository.save(user);
     }
 
     @Override
@@ -68,8 +62,11 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User principal =
                 (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        return userRepository.findByLogin(principal.getUsername())
+
+        System.out.println("authentication.getDetails()egdgdgdgeg \n" + authentication.getDetails());
+       return userRepository.findByLogin(principal.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("user not found"));
+        //return userDetailsService.loadUserByUsername(principal.getUsername()).getUsername();
     }
 }
 

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Service.UserServiceImpl;
+import com.example.demo.model.Task;
 import com.example.demo.model.Users;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,33 @@ public class UsersController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserServiceImpl userService;
+
     @PostMapping("/users")
     public Users create(@RequestBody Users users) {
-        //return UserServiceImpl.getInstance().saveUser(users);
-        return UserServiceImpl.getInstance().create(users);
+        return userService.create(users);
+    }
+
+    @GetMapping("/users/me")
+    public List<Users> getCurrentUser() {
+        List<Users> user = new ArrayList<>();
+        user.add(userService.getCurrentUser());
+        return user;
+
+    }
+
+
+    @GetMapping("/main-user")
+    public String getMainUser() {
+        return "main-user";
+
+    }
+
+    @GetMapping("/main-admin")
+    public String getMainAdmin() {
+        return "main-admin";
+
     }
 
 }
