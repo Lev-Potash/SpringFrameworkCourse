@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.collection.UserProtected;
 import com.example.demo.model.Users;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -48,6 +52,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
+    public List<UserProtected> getProtectedUser() {
+
+        UserProtected userProtected = new UserProtected(getCurrentUser().getId(), getCurrentUser().getLogin());
+        List<UserProtected> userProtectedList = new ArrayList<>();
+        userProtectedList.add(userProtected);
+
+        return userProtectedList;
+    }
+
     /**
      * <code>authentication.getPrincipal()</code>
      * @return <code>Principal</code> (участника), который проходит проверку подлинности,
@@ -63,7 +77,7 @@ public class UserServiceImpl implements UserService {
         org.springframework.security.core.userdetails.User principal =
                 (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
 
-        System.out.println("authentication.getDetails()egdgdgdgeg \n" + authentication.getDetails());
+        System.out.println("authentication.getDetails() \n" + authentication.getDetails());
        return userRepository.findByLogin(principal.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("user not found"));
         //return userDetailsService.loadUserByUsername(principal.getUsername()).getUsername();

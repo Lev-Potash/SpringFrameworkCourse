@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Service.UserServiceImpl;
+import com.example.demo.collection.UserProtected;
 import com.example.demo.model.Task;
 import com.example.demo.model.Users;
 import com.example.demo.repository.UserRepository;
@@ -28,12 +29,9 @@ public class UsersController {
         return userService.create(users);
     }
 
-    @GetMapping("/users/me")
-    public List<Users> getCurrentUser() {
-        List<Users> user = new ArrayList<>();
-        user.add(userService.getCurrentUser());
-        return user;
-
+    @GetMapping(value = "/users/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserProtected> getCurrentUser() {
+        return userService.getProtectedUser();
     }
 
 

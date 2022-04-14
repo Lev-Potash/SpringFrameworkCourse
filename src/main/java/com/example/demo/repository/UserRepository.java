@@ -29,4 +29,8 @@ public interface UserRepository extends PagingAndSortingRepository<Users, Long> 
             "WHERE u.login = :login")
     Optional<Users> findByLogin(@Param("login") String login);
 
+    /*@Query("SELECT u.id, u.login FROM Users u " +
+            "WHERE u.login = :login")
+    Optional<Users> findIdLoginByLogin(@Param("login") String login);*/
+
 }
