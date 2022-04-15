@@ -52,16 +52,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    @Override
-    public List<UserProtected> getProtectedUser() {
-
-        UserProtected userProtected = new UserProtected(getCurrentUser().getId(), getCurrentUser().getLogin());
-        List<UserProtected> userProtectedList = new ArrayList<>();
-        userProtectedList.add(userProtected);
-
-        return userProtectedList;
-    }
-
     /**
      * <code>authentication.getPrincipal()</code>
      * @return <code>Principal</code> (участника), который проходит проверку подлинности,
@@ -81,6 +71,17 @@ public class UserServiceImpl implements UserService {
        return userRepository.findByLogin(principal.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("user not found"));
         //return userDetailsService.loadUserByUsername(principal.getUsername()).getUsername();
+    }
+
+
+    @Override
+    public List<UserProtected> getProtectedUser() {
+
+        UserProtected userProtected = new UserProtected(getCurrentUser().getId(), getCurrentUser().getLogin());
+        List<UserProtected> userProtectedList = new ArrayList<>();
+        userProtectedList.add(userProtected);
+
+        return userProtectedList;
     }
 }
 
